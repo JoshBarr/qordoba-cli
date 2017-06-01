@@ -1,0 +1,9 @@
+# qordoba changelog
+
+## 1.0.5
+
+2017-05-31
+
+### Deleted validation for filepath pattern in push command
+
+- `validate_push_pattern()` - validates that pattern contains either * or ?

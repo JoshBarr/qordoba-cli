@@ -3,7 +3,7 @@
 from codecs import open
 from setuptools import setup
 
-__version__ = '1.0.4'
+__version__ = '1.0.6'
 
 
 packages = [
@@ -24,6 +24,7 @@ setup(
     entry_points={'console_scripts': ['qor=qordoba.cli:main', 'qordoba=qordoba.cli:main']},
     description="Qordoba command line tool",
     url="https://www.qordoba.com",
+    download_url = 'https://github.com/Qordobacode/qordoba-cli/tarball/1.0.5',
     dependency_links=[],
     setup_requires=[],
     install_requires=get_requirements('requirements.txt').splitlines(),
