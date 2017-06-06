@@ -8,7 +8,6 @@ import requests, zipfile, StringIO
 import sys
 import tempfile
 
-
 from qordoba.commands.utils import mkdirs, ask_select, ask_question
 from qordoba.languages import get_destination_languages, get_source_language, init_language_storage, normalize_language
 from qordoba.project import ProjectAPI, PageStatus
@@ -17,12 +16,10 @@ from qordoba.sources import create_target_path_by_pattern
 
 log = logging.getLogger('qordoba')
 
-
 def format_file_name(page):
     if page.get('version_tag'):
         return '{} [{}]'.format(page['url'], page['version_tag'])
     return page['url']
-
 
 class FileUpdateOptions(object):
     skip = 'Skip'
@@ -41,7 +38,6 @@ class FileUpdateOptions(object):
     def get_action(cls, name):
         return cls._actions.get(name, None)
 
-
 def validate_languges_input(languages, project_languages):
     selected_langs = set()
     for l in languages:
@@ -53,7 +49,6 @@ def validate_languges_input(languages, project_languages):
                                 .format(','.join((str(i) for i in not_valid))))
 
     return list(selected_langs)
-
 
 def pull_command(curdir, config, force=False, languages=(), in_progress=False, update_action=None, **kwargs):
     api = ProjectAPI(config)
@@ -120,7 +115,6 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
                 log.warning('Translation file already exists. `{}`'.format(target_path.native_path))
                 answer = FileUpdateOptions.get_action(update_action) or ask_select(FileUpdateOptions.all,
                                                                                    prompt='Choice: ')
-                
                 if answer == FileUpdateOptions.skip:
                     log.info('Download translation file `{}` was skipped.'.format(target_path.native_path))
                     continue
