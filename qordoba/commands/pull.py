@@ -59,11 +59,14 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
     api = ProjectAPI(config)
     init_language_storage(api)
     project = api.get_project()
+
     target_languages = get_destination_languages(project)
     source_language = get_source_language(project)
     source_name = source_language.code
     source_content_type_code = None
-
+    target_languages_page_ids = []
+    target_languages_ids = []
+    source_to_target_paths = {}
 
     if languages:
         languages = validate_languges_input(languages, target_languages)
@@ -76,12 +79,6 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
     if in_progress is False:
         log.debug('Pull only completed translations.')
         status_filter = [PageStatus.completed, ]
-
-
-    target_languages_page_ids = []
-    target_languages_ids = []
-    source_to_target_paths = {}
-
 
     for language in languages:
         is_started = False
@@ -111,7 +108,7 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
             stripped_target_path = ((target_path.native_path).rsplit('/',1))[0]
             source_to_target_paths[language.code] = stripped_target_path
             
-            # adding the source langauge to the target_path_of_source_language pattern for later renaming of folders in zip extraction 
+            # adding the source langauge to the target_path_of_source_language pattern so the source language will be also pulled  
             target_path_of_source_language = create_target_path_by_pattern(curdir, source_language, pattern=pattern,
                                                         source_name=source_name,
                                                         content_type_code=source_content_type_code)
@@ -135,12 +132,16 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
         if not is_started:
             log.info('Nothing to download for language `{}`'.format(language.code))
     
+    ## makeing request to our internal api: export_files_bulk (POST). This request downloads all files for given language
     res = api.download_files(target_languages_page_ids, target_languages_ids)
 
-
+    ##the api return a url and accesstoken for the google cloud server where Qordobas saves the translated files
     r = requests.get(res, stream=True)
+    ## unzipping the returned zipfile
     z = zipfile.ZipFile(StringIO.StringIO(r.content))
 
+    ## iterating through the source and target languages of the project downloads step by step all files.
+    ## the files will be downloaded into earlier defined folder patterns for the poject
     for source_path, target_path in source_to_target_paths.iteritems():
         root = os.getcwd()
         temp_folder_path = tempfile.mktemp()
@@ -154,6 +155,10 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
         root_src_dir = os.path.join(os.getcwd(), source_path)
         root_dst_dir = os.path.join(os.getcwd(), target_path)
 
+        ## first, the zip files are stored in the original zip-directory-name. 
+        ## second, the project defined folder patterns are created if they were missing
+        ## thirs, files are moved from zip folder to defined folder patterns
+        ## zip folders are completely deleted
         for src_dir, dirs, files in os.walk(root_src_dir):
             dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
             if not os.path.exists(dst_dir):
