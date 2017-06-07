@@ -148,7 +148,7 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
                 milestone = page_status['status']['id']
                 log.debug('Selected status for page `{}` - {}'.format(page_status['id'], page_status['status']['name']))
 
-            dest_path = create_dest_path_by_pattern(curdir, language, pattern=pattern,
+            dest_path = create_target_path_by_pattern(curdir, language, pattern=pattern,
                                                         source_name=page_status['name'],
                                                         content_type_code=page_status['content_type_code'])
             stripped_dest_path = ((dest_path.native_path).rsplit('/',1))[0]
@@ -157,7 +157,7 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
 
             if control_number_one == 0:
                 # adding the src langauge to the dest_path_of_src_language pattern so the src language will be also pulled 
-                dest_path_of_src_language = create_dest_path_by_pattern(curdir, src_language, pattern=pattern,
+                dest_path_of_src_language = create_target_path_by_pattern(curdir, src_language, pattern=pattern,
                                                             source_name=page_status['name'],
                                                             content_type_code=page_status['content_type_code'])
                 src_page_status_id = page_status['id']
