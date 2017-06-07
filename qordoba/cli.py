@@ -167,17 +167,19 @@ class PullHandler(BaseHandler):
         parser = super(PullHandler, cls).register(*args, **kwargs)
         parser.add_argument('--in-progress', dest='in_progress', action='store_true',
                             help='Allow to download not completed translations.')
-
         parser.add_argument('-l', '--languages', dest='languages', nargs='+', type=CommaSeparatedSet(),
                             help="Work only on specified (comma-separated) languages.")
         parser.add_argument('-f', '--force', dest='force', action='store_true',
                             help='Force to update local translation files. Do not ask approval.')
+        parser.add_argument('-b', '--bulk', dest='bulk', action='store_true', 
+                            help="Force to download languages in bulks, incl. source language.")
 
         group = parser.add_mutually_exclusive_group()
         group.add_argument('--skip', dest='skip', action='store_true', help='Skip downloading if file exists.')
         group.add_argument('--replace', dest='replace', action='store_true', help='Replace existing file.')
         group.add_argument('--set-new', dest='set_new', action='store_true',
                            help='Ask to set new filename if file exists.')
+
         return parser
 
     def get_update_action(self):
@@ -191,12 +193,13 @@ class PullHandler(BaseHandler):
         return action
 
     def main(self):
+        print("works until here")
         config = self.load_settings()
         languages = []
         if isinstance(self.languages, (list, tuple, set)):
             languages.extend(self.languages)
         pull_command(self._curdir, config, languages=set(itertools.chain(*languages)),
-                     in_progress=self.in_progress, update_action=self.get_update_action(), force=self.force)
+                     in_progress=self.in_progress, update_action=self.get_update_action(), force=self.force, bulk=self.bulk)
 
 
 class PushHandler(BaseHandler):
@@ -314,4 +317,5 @@ def main():
 
 
 if __name__ == '__main__':
+    print("hi")
     main()
