@@ -72,7 +72,7 @@ def pull_bulk(api, src_to_dest_paths, dest_languages_page_ids, dest_languages_id
     # iterating through the src and dest languages of the project downloads step by step all files.
     # the files will be downloaded into earlier defined folder patterns for the poject
     for src_path, dest_path in set(src_to_dest_paths):
-        log.info('Downloading tranlation files in bulks for language `{}` to destination `{}`'.format(
+        log.info('Downloading translation files in bulks for language `{}` to destination `{}`'.format(
             src_path,
             dest_path,
         ))
@@ -130,6 +130,11 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
         status_filter = [PageStatus.completed, ]
 
     for language in languages:
+        print("----------")
+        print(language.code)
+        print("LANGUAGE")
+        print("----------")
+
         is_started = False
 
         for page in api.page_search(language.id, status=status_filter):
@@ -200,4 +205,5 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
             log.info('Nothing to download for language `{}`'.format(language.code))
 
     if bulk:
+        print(src_to_dest_paths)
         pull_bulk(api, src_to_dest_paths, dest_languages_page_ids, dest_languages_ids)

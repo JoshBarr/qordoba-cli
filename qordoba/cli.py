@@ -155,7 +155,6 @@ class StatusHandler(BaseHandler):
         table = AsciiTable(rows).table
         print(table)
 
-
 class PullHandler(BaseHandler):
     name = 'pull'
     help = """

@@ -71,6 +71,7 @@ def init_language_storage(api):
     _LANGUAGES = {}
     langs = api.get_languages()
 
+
     for data in langs:
         lang = Language(data)
         _LANGUAGES[lang.code] = lang
