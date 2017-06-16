@@ -166,7 +166,7 @@ class ProjectAPI(object):
         resp = requests.post(url, files=files, json=json, data=data, headers=headers, **kwargs)
         print('{}\n{}\n{}\n\n'.format(
             '-----------START-----------',
-            "get" + ' ' + resp.url,
+            "post" + ' ' + resp.url,
             '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
         ))
         print("DO POST")
@@ -184,7 +184,7 @@ class ProjectAPI(object):
         resp = requests.put(url, files=files, json=json, data=data, headers=headers, **kwargs)
         print('{}\n{}\n{}\n\n'.format(
             '-----------START-----------',
-            "get" + ' ' + resp.url,
+            "put" + ' ' + resp.url,
             '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
         ))
         print("DO PUT")
@@ -222,7 +222,7 @@ class ProjectAPI(object):
         resp = requests.delete(url, json=json, headers=headers, **kwargs)
         print('{}\n{}\n{}\n\n'.format(
             '-----------START-----------',
-            "get" + ' ' + resp.url,
+            "delete" + ' ' + resp.url,
             '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
         ))
         print("DO DELETE")
@@ -255,12 +255,6 @@ class ProjectAPI(object):
         language_url = self.build_url(*params)
 
         resp = self.do_get(language_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET LANGUAGES")
         return resp.json()['languages']
 
     def get_project(self):
@@ -270,14 +264,6 @@ class ProjectAPI(object):
         )
 
         resp = self.do_get(self.build_url(*params))
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET PROJECT")
-
-
         return resp.json()['project']
 
     @paginated('projects')
@@ -390,12 +376,6 @@ class ProjectAPI(object):
         project_list_url = self.build_url(*params, **query)
 
         resp = self.do_get(project_list_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET PROJECT+S")
         # @todo add pagination
         return resp.json()
 
@@ -419,12 +399,6 @@ class ProjectAPI(object):
         }
 
         resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)}, data=values)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("UPLOAD FILE")
         return resp.json()
 
     def upload_anytype_file(self, stream, file_name, content_type_code,
@@ -469,12 +443,6 @@ class ProjectAPI(object):
         }
 
         resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)}, data=values)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("UPLOAD ANY TYPE FILE")
         log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
@@ -499,12 +467,6 @@ class ProjectAPI(object):
         upload_url = self.build_url(*params)
 
         resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)})
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("UPDATE UPLOAD ANY TYPE FILE")
         log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
@@ -532,12 +494,6 @@ class ProjectAPI(object):
         upload_url = self.build_url(*params)
 
         resp = self.do_put(upload_url, json=payload)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("APPLY UPLOAD FILE")
         log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
@@ -574,12 +530,7 @@ class ProjectAPI(object):
         upload_url = self.build_url(*params, **query)
 
         resp = self.do_post(upload_url, json=[payload, ])
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("APPEND FILE")
+
         log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
@@ -618,12 +569,7 @@ class ProjectAPI(object):
         download_url = self.build_url(*params)
 
         resp = self.do_get(download_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("DOWNLOAD FILE")
+
         data = resp.json()
 
         return self._download_raw_file(data['token'], data['filename'])
@@ -663,12 +609,7 @@ class ProjectAPI(object):
         }
 
         resp = self.do_post(download_url, json=payload)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("DOWNLOAD FILES")
+
         data = resp.json()
         return self.create_download_url_for_zip(data['token'], data['filename'])
 
@@ -719,12 +660,7 @@ class ProjectAPI(object):
         pages_url = self.build_url(*params, **query)
 
         resp = self.do_get(pages_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET PAGES")
+
         return resp.json()
 
     def get_page_stats(self, language_id, page_id):
@@ -752,12 +688,7 @@ class ProjectAPI(object):
         stats_url = self.build_url(*params)
 
         resp = self.do_get(stats_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET PAGE STATS")
+
         return resp.json()
 
     def get_page_details(self, language_id, page_id):
@@ -829,12 +760,7 @@ class ProjectAPI(object):
         page_url = self.build_url(*params)
 
         resp = self.do_get(page_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET PAGE DETAILS")
+
         return resp.json()['page']
 
     def get_report_progress(self, language_id=None):
@@ -970,12 +896,7 @@ class ProjectAPI(object):
         progress_url = self.build_url(*params, **query)
 
         resp = self.do_get(progress_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("GET REPORT PROGRESS")
+
         return resp.json()
 
     @paginated('pages')
@@ -1068,12 +989,7 @@ class ProjectAPI(object):
             body['title'] = search_string
 
         resp = self.do_post(page_url, json=body)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("PAGE SEARCH")
+
         log.debug('ResponseContent: {}'.format(resp.content))
         return resp.json()
 
@@ -1090,11 +1006,6 @@ class ProjectAPI(object):
         delete_url = self.build_url(*params)
 
         resp = self.do_delete(delete_url)
-        print('{}\n{}\n{}\n\n'.format(
-            '-----------START-----------',
-            "get" + ' ' + resp.url,
-            '\n'.join('{}: {}'.format(k, v) for k, v in resp.headers.items()),
-        ))
-        print("DELETE PAGE")
+
 
         return resp.json()
