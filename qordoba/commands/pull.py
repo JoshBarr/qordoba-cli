@@ -5,6 +5,8 @@ import logging
 import os
 import shutil
 from argparse import ArgumentTypeError
+import itertools
+import operator
 import requests, zipfile
 try:
     import StringIO
@@ -106,7 +108,7 @@ def pull_bulk(api, src_to_dest_paths, dest_languages_page_ids, dest_languages_id
 
 
 def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progress=False, update_action=None,
-                 **kwargs):
+                 files=(), **kwargs):
     api = ProjectAPI(config)
     init_language_storage(api)
     project = api.get_project()
@@ -137,9 +139,35 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
         is_started = False
         current_page_path = None
 
-        for page in api.page_search(language.id, status=status_filter):
+        if not files:
+            pages = api.page_search(language.id, status=status_filter)
+        else:
+            pages = []
+            for search_term in files:
+                result = api.page_search(language.id, status=status_filter, search_string=search_term)
+                pages = itertools.chain(pages, result)
+
+        for page in pages:
             is_started = True
             page_status = api.get_page_details(language.id, page['page_id'], )
+
+            """
+            If searching for specific files, skip those that don't match the search criteria.
+            """
+            if files:
+                needle = None
+                for file_name in files:
+                    remote_file_name = page_status['url'].partition('_')[2]
+                    if file_name in remote_file_name:
+                        needle = page_status['url']
+                if needle is None:
+                    continue
+                else:
+                    log.info('Found matching translation file src `{}` language `{}`'.format(
+                        format_file_name(page),
+                        language.code,
+                    ))
+
             dest_languages_page_ids.append(page['page_id'])
             dest_languages_ids.append(language.id)
 

@@ -172,9 +172,11 @@ class PullHandler(BaseHandler):
                             help="Work only on specified (comma-separated) languages.")
         parser.add_argument('-f', '--force', dest='force', action='store_true',
                             help='Force to update local translation files. Do not ask approval.')
+        # pull_type_group = parser.add_mutually_exclusive_group()
         parser.add_argument('-b', '--bulk', dest='bulk', action='store_true',
                             help="Force to download languages in bulk, incl. source language.")
-
+        parser.add_argument('-i', '--files', dest='files', nargs='+', type=CommaSeparatedSet(),
+                            help='Specify which files to download.')
         group = parser.add_mutually_exclusive_group()
         group.add_argument('--skip', dest='skip', action='store_true', help='Skip downloading if file exists.')
         group.add_argument('--replace', dest='replace', action='store_true', help='Replace existing file.')
@@ -195,10 +197,14 @@ class PullHandler(BaseHandler):
     def main(self):
         config = self.load_settings()
         languages = []
+        files = []
         if isinstance(self.languages, (list, tuple, set)):
             languages.extend(self.languages)
+        if isinstance(self.files, (list, tuple, set)):
+            files.extend(self.files)
         pull_command(self._curdir, config, languages=set(itertools.chain(*languages)),
-                     in_progress=self.in_progress, update_action=self.get_update_action(), force=self.force, bulk=self.bulk)
+                     in_progress=self.in_progress, update_action=self.get_update_action(),
+                     force=self.force, bulk=self.bulk, files=set(itertools.chain(*files)))
 
 class PushHandler(BaseHandler):
     name = 'push'
@@ -236,7 +242,7 @@ class ListHandler(BaseHandler):
         table = AsciiTable(rows).table
         print(table)
 
-        
+
 class DeleteHandler(BaseHandler):
     name = 'delete'
     help = """
