@@ -80,5 +80,8 @@ def test_load_settings_overrite(mock_change_dir):
 
 def test_get_project_file_formats(mock_change_dir):
     settings, loaded = load_settings(access_token='22', project_id='33')
+    settings['file_formats'] = {
+        'resx': 'resx'
+    }
     result = get_project_file_formats(settings)
-    assert result['resx'] == ['resx', 'txt']
+    assert result['resx'] == 'resx'

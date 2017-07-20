@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from qordoba.strategies import Extension, Shebang
+from qordoba.strategies import Extension
 
 @pytest.fixture
 def valid_extension():

@@ -80,7 +80,9 @@ def Filename():
                 data = (yaml.load(stream))
                 languages = []
                 for filename_key_value in self.find_ext(data, 'filenames'):
-                    assert isinstance(ext_key_value, object)
+                    assert isinstance(filename_key_value, object)
                     (filename_key, filename_value) = filename_key_value
                     if filename == filename_value:
                         languages.append()
+            except:
+                pass
