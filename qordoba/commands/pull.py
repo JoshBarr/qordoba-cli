@@ -195,7 +195,7 @@ def pull_command(curdir, config, force=False, bulk=False, languages=(), in_progr
 
             if not bulk:
                 '''checking if file extension wanted in config file matches downloaded file. If not, continue'''
-                valid_extension = pattern.split('.')[-1]
+                valid_extension = pattern.split('.')[-1] if pattern else None
                 file_extension = page['url'].split('.')[-1]
                 if valid_extension != file_extension:
                     continue
