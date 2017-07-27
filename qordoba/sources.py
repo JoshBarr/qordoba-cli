@@ -27,7 +27,7 @@ CONTENT_TYPE_CODES['csv'] = ('csv',)
 CONTENT_TYPE_CODES['JSON'] = ('json',)
 CONTENT_TYPE_CODES['SRT'] = ('srt',)
 CONTENT_TYPE_CODES['md'] = ('md', 'text')
-CONTENT_TYPE_CODES['html'] = ('html')
+CONTENT_TYPE_CODES['html'] = ('html',)
 
 ALLOWED_EXTENSIONS = OrderedDict(
     {extension: k for k, extensions in CONTENT_TYPE_CODES.items() for extension in extensions}
@@ -35,6 +35,7 @@ ALLOWED_EXTENSIONS = OrderedDict(
 
 ADJUST_EXTENSION = {
     "resx": "regex",
+    "html": "stringsHtml",
 }
 
 MIMETYPES = {
